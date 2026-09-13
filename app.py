@@ -1,3 +1,4 @@
+import plotly.graph_objects as go
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -96,5 +97,25 @@ elif page == "Predictive Insights":
         st.success(f"🤖 Model Prediction: Pakistan is on track to hit its 30% mandate by **{int(parity_year)}**.")
 
 elif page == "Supply Chain":
-    st.title("Supply Chain Bottlenecks")
-    st.info("Visual map of raw materials (Lithium, Nickel, Cobalt) from mining to assembly will be displayed here.")
+    st.title("Global Supply Chain Flow")
+    st.write("Tracking critical EV materials from raw mining to final vehicle assembly.")
+    
+    # Create an interactive Sankey Diagram
+    fig = go.Figure(data=[go.Sankey(
+        node = dict(
+          pad = 15,
+          thickness = 20,
+          line = dict(color = "black", width = 0.5),
+          label = ["Lithium (Chile/Australia)", "Nickel (Canada/Indonesia)", "Cobalt (DRC)", 
+                   "Chemical Refining (Asia/EU)", "Battery Cell Production (Gigafactories)", 
+                   "Canada Assembly (4-Wheelers)", "Pakistan Assembly (2/3-Wheelers)"],
+          color = ["#FF6B6B", "#4ECDC4", "#45B7D1", "#F7B731", "#5F27CD", "#FF9F43", "#10AC84"]
+        ),
+        link = dict(
+          source = [0, 1, 2, 3, 4, 4], # The origin nodes
+          target = [3, 3, 3, 4, 5, 6], # The destination nodes
+          value =  [40, 35, 25, 100, 70, 30] # The volume of flow
+        ))])
+    
+    fig.update_layout(height=600, font_size=12)
+    st.plotly_chart(fig, use_container_width=True)
